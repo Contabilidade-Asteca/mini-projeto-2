@@ -47,6 +47,24 @@ class Conta(ABC):
         """Getter para o saldo, permitindo acesso controlado."""
         return self._saldo
 
+    @property
+    def numero(self):
+
+        """Getter para o número da conta."""
+        return self._numero
+
+    @property
+    def cliente(self):
+
+        """Getter para acessar o cliente associado à conta."""
+        return self._cliente
+
+    @property
+    def tipo(self):
+
+        """Retorna o tipo da conta com base no nome da classe."""
+        return self.__class__.__name__
+
     # Método de classe para consultar o número total de contas
     @classmethod
     def get_total_contas(cls):
@@ -97,6 +115,11 @@ class Conta(ABC):
         for data, transacao in self._historico:
             print(f"- {data.strftime('%d/%m/%Y %H:%M:%S')}: {transacao}")
         print("--------------------------------------\n")
+
+    def obter_historico(self):
+
+        """Retorna uma cópia do histórico de transações."""
+        return list(self._historico)
 
 # Define a subclasse ContaCorrente
 class ContaCorrente(Conta):

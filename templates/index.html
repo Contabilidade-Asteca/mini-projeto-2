@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="dashboard">
+    <div class="summary">
+        <article class="summary__card">
+            <span class="summary__icon">👥</span>
+            <div>
+                <h2>{{ total_clientes }}</h2>
+                <p>Clientes cadastrados</p>
+            </div>
+        </article>
+        <article class="summary__card">
+            <span class="summary__icon">🏦</span>
+            <div>
+                <h2>{{ total_contas }}</h2>
+                <p>Contas ativas</p>
+            </div>
+        </article>
+        <article class="summary__card">
+            <span class="summary__icon">💰</span>
+            <div>
+                <h2>R${{ '%.2f'|format(total_saldo) }}</h2>
+                <p>Saldo total em caixa</p>
+            </div>
+        </article>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="alerts">
+                {% for category, message in messages %}
+                    <li class="alert alert--{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <div class="grid">
+        <section class="card">
+            <h3>Cadastrar cliente</h3>
+            <form action="{{ url_for('adicionar_cliente') }}" method="post" class="form">
+                <label for="nome">Nome completo</label>
+                <input type="text" id="nome" name="nome" placeholder="Maria Silva" required>
+
+                <label for="cpf">CPF</label>
+                <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" required>
+
+                <button type="submit" class="btn btn--primary">Adicionar cliente</button>
+            </form>
+        </section>
+
+        <section class="card">
+            <h3>Criar conta</h3>
+            <form action="{{ url_for('criar_conta') }}" method="post" class="form">
+                <label for="cpf_cliente">Cliente</label>
+                <select id="cpf_cliente" name="cpf_cliente" required>
+                    <option value="" disabled selected>Selecione um cliente</option>
+                    {% for cliente in clientes %}
+                        <option value="{{ cliente.cpf }}">{{ cliente.nome }} ({{ cliente.cpf }})</option>
+                    {% endfor %}
+                </select>
+
+                <label for="tipo">Tipo de conta</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="tipo" value="corrente" checked> Conta Corrente</label>
+                    <label><input type="radio" name="tipo" value="poupanca"> Conta Poupança</label>
+                </div>
+
+                <button type="submit" class="btn btn--primary">Gerar conta</button>
+            </form>
+        </section>
+
+        <section class="card">
+            <h3>Depositar</h3>
+            <form action="{{ url_for('depositar') }}" method="post" class="form">
+                <label for="numero_conta_deposito">Número da conta</label>
+                <input type="number" id="numero_conta_deposito" name="numero_conta_deposito" min="1" required>
+
+                <label for="valor_deposito">Valor</label>
+                <input type="number" id="valor_deposito" name="valor_deposito" step="0.01" min="0" placeholder="100.00" required>
+
+                <button type="submit" class="btn">Depositar</button>
+            </form>
+        </section>
+
+        <section class="card">
+            <h3>Sacar</h3>
+            <form action="{{ url_for('sacar') }}" method="post" class="form">
+                <label for="numero_conta_saque">Número da conta</label>
+                <input type="number" id="numero_conta_saque" name="numero_conta_saque" min="1" required>
+
+                <label for="valor_saque">Valor</label>
+                <input type="number" id="valor_saque" name="valor_saque" step="0.01" min="0" placeholder="50.00" required>
+
+                <button type="submit" class="btn">Sacar</button>
+            </form>
+        </section>
+
+        <section class="card grid__full">
+            <h3>Consultar extrato</h3>
+            <form action="{{ url_for('extrato') }}" method="post" class="form form--inline">
+                <div class="form__group">
+                    <label for="numero_conta_extrato">Número da conta</label>
+                    <input type="number" id="numero_conta_extrato" name="numero_conta_extrato" min="1" required>
+                </div>
+                <button type="submit" class="btn btn--secondary">Mostrar extrato</button>
+            </form>
+
+            {% if extrato %}
+                <div class="extrato">
+                    <header class="extrato__header">
+                        <h4>Conta nº {{ extrato.numero }} - {{ extrato.cliente }}</h4>
+                        <span>Saldo atual: R${{ '%.2f'|format(extrato.saldo) }}</span>
+                    </header>
+                    {% if extrato.historico %}
+                        <ul class="extrato__lista">
+                            {% for item in extrato.historico|reverse %}
+                                <li>
+                                    <span class="extrato__data">{{ item.data }}</span>
+                                    <span class="extrato__descricao">{{ item.descricao }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="extrato__vazio">Nenhuma movimentação registrada.</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </section>
+    </div>
+
+    <section class="card">
+        <h3>Clientes e contas vinculadas</h3>
+        {% if clientes %}
+            <ul class="lista-clientes">
+                {% for cliente in clientes %}
+                    <li>
+                        <div>
+                            <strong>{{ cliente.nome }}</strong>
+                            <span class="lista-clientes__cpf">CPF: {{ cliente.cpf }}</span>
+                        </div>
+                        {% if cliente.contas %}
+                            <ul class="lista-contas">
+                                {% for conta in cliente.contas %}
+                                    <li>
+                                        <span class="tag">Conta nº {{ conta.numero }}</span>
+                                        <span class="tag">{{ 'Corrente' if conta.tipo.endswith('Corrente') else 'Poupança' }}</span>
+                                        <span class="tag">Saldo: R${{ '%.2f'|format(conta.saldo) }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="lista-contas__vazio">Nenhuma conta vinculada.</p>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Nenhum cliente cadastrado até o momento.</p>
+        {% endif %}
+    </section>
+</section>
+{% endblock %}
