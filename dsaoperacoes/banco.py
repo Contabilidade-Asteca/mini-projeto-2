@@ -92,5 +92,25 @@ class Banco:
             raise ContaInexistenteError(numero_conta)
         return conta
 
+    def listar_clientes(self):
+
+        """Retorna uma lista com todos os clientes cadastrados."""
+        return list(self._clientes.values())
+
+    def listar_contas(self):
+
+        """Retorna uma lista com todas as contas cadastradas."""
+        return list(self._contas.values())
+
+    def cliente_existe(self, cpf: str) -> bool:
+
+        """Verifica se há um cliente cadastrado com o CPF informado."""
+        return cpf in self._clientes
+
+    def buscar_cliente(self, cpf: str) -> Cliente | None:
+
+        """Retorna um cliente pelo CPF caso exista."""
+        return self._clientes.get(cpf)
+
 
 

@@ -1,36 +1,53 @@
-# Mini-Projeto 2 - Aplicação Full-Stack de Sistema Bancário em Python com Programação Orientada a Objetos
+# Mini-Projeto 2 - Sistema Bancário Educativo
 
-## Estrutura do Projeto
-### Vamos organizar nosso projeto na seguinte estrutura de pastas e arquivos:
+Aplicação educacional que demonstra conceitos de Programação Orientada a Objetos na construção de um sistema bancário. Agora o projeto conta com uma interface web moderna desenvolvida com Flask para facilitar a visualização das operações e o gerenciamento dos clientes e contas.
 
+## 🚀 Recursos
+- Interface web responsiva para cadastro de clientes, criação de contas, depósitos, saques e consulta de extratos.
+- Painel com indicadores do total de clientes, contas e saldo agregado.
+- Organização modular com entidades, operações e exceções reutilizáveis.
+- Interface de linha de comando original mantida para fins de estudo.
+
+## 🗂️ Estrutura do projeto
 ```
 Mini-Projeto2/
+├── app.py                  # Aplicação Flask com a interface web
+├── requirements.txt        # Dependências da aplicação web
+├── dsa_mini_projeto2.py    # Interface em modo texto (CLI)
 ├── dsaentidades/
-│   ├── __init__.py
 │   ├── cliente.py
 │   └── conta.py
 ├── dsaoperacoes/
-│   ├── __init__.py
 │   └── banco.py
 ├── dsautilitarios/
-│   ├── __init__.py
 │   └── exceptions.py
-└── dsa_mini_projeto2.py
-
+├── templates/              # Páginas HTML da aplicação web
+│   ├── base.html
+│   └── index.html
+└── static/
+    └── css/
+        └── styles.css
 ```
 
-## Descrição:
+## 💻 Executando a interface web
+1. Crie e ative um ambiente virtual (opcional, mas recomendado).
+2. Instale as dependências:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Execute a aplicação Flask:
+   ```bash
+   flask --app app run
+   ```
+4. Acesse `http://127.0.0.1:5000/` no navegador para utilizar o dashboard bancário.
 
-dsaentidades/: Contém as classes que representam as entidades de dados do nosso sistema (Cliente, Conta).
+> 💡 Os dados são mantidos em memória durante a execução. Ao reiniciar o servidor, o estado é reiniciado.
 
-dsaoperacoes/: Contém a lógica de negócio e as operações principais (a classe Banco que gerencia tudo).
+## 🧪 Utilizando a versão em linha de comando
+Se preferir explorar a versão original em CLI, basta executar:
+```bash
+python dsa_mini_projeto2.py
+```
 
-dsautilitarios/: Contém utilitários, como exceções customizadas.
-
-dsa_mini_projeto2.py: É o ponto de entrada da nossa aplicação, responsável pela interface com o usuário (CLI - Command Line Interface).
-
-## Execução:
-
-Abra o terminal ou prompt de comando, navegue até a pasta com os arquivos do Mini-Projeto e execute o comando abaixo:
-
-**python dsa_mini_projeto2.py**
+## 📚 Sobre o projeto
+Este mini-projeto faz parte da formação da Data Science Academy e tem como objetivo reforçar conceitos fundamentais de orientação a objetos, encapsulamento e polimorfismo por meio de um caso prático.
